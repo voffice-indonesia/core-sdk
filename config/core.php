@@ -18,4 +18,12 @@ return [
     'redirect_uri' => env('VAUTH_REDIRECT_URI', 'https://your-app.com/auth/callback'),
     'scopes' => env('VAUTH_SCOPES', 'user:read orders:create'),
     'login_url' => env('VAUTH_LOGIN_URL', config('app.url') . '/vauth/redirect'),
+
+
+    /**
+     *
+     * SDK Config
+     *
+     */
+    'guard_name'    => 'core'
 ];

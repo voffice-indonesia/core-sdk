@@ -4,11 +4,11 @@ namespace VoxDev\Core\Commands;
 
 use Illuminate\Console\Command;
 
-class CoreCommand extends Command
+class CoreSetupCommand extends Command
 {
-    public $signature = 'core-sdk';
+    public $signature = 'core:setup';
 
-    public $description = 'My command';
+    public $description = 'Setup the core package by publishing files and showing instructions.';
 
     public function handle(): int
     {

@@ -2,9 +2,12 @@
 
 namespace VoxDev\Core;
 
+use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VoxDev\Core\Commands\CoreCommand;
+use VoxDev\Core\App\Auth\CoreAuthGuard;
+use VoxDev\Core\App\Auth\CoreAuthUserProvider;
+use VoxDev\Core\Commands\CoreSetupCommand;
 
 class CoreServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +20,14 @@ class CoreServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('core-sdk')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_core_sdk_table')
-            ->hasCommand(CoreCommand::class);
+            ->hasConfigFile('core')
+            ->hasCommand(CoreSetupCommand::class);
+    }
+
+    public function bootingPackage()
+    {
+        Auth::extend(config('core.guard_name'), function($app) {
+            return new CoreAuthGuard(Auth::createUserProvider(CoreAuthUserProvider::class), $app->make('request'));
+        });
     }
 }
