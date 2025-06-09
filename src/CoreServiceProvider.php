@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace VoxDev\Core;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use VoxDev\Core\Commands\CoreCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class CoreServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('core-sdk')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_core_sdk_table')
+            ->hasCommand(CoreCommand::class);
     }
 }
