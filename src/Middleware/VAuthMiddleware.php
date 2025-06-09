@@ -20,28 +20,29 @@ class VAuthMiddleware
     {
         // Get valid token (will refresh automatically if needed)
         $token = VAuthHelper::getValidToken();
-        
-        if (!$token) {
+
+        if (! $token) {
             // No valid token available, redirect to login
             return redirect(config('vauth.login_url'));
         }
 
         // Get user info using the valid token
         $userInfo = VAuthHelper::getUserInfo();
-        
-        if (!$userInfo) {
+
+        if (! $userInfo) {
             // API call failed even with valid token, clear cookies and redirect
             VAuthHelper::clearAuthCookies();
+
             return redirect(config('vauth.login_url'));
         }
 
         // Store the user data in the session for controllers to use
         session(['vauth_user' => $userInfo]);
-        
+
         // Login the user with the vauth guard for Filament
         $vAuthUser = new CoreAuthUser($userInfo);
         Auth::guard('vauth')->login($vAuthUser);
-        
+
         return $next($request);
     }
 }

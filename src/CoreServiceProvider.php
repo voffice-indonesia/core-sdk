@@ -26,7 +26,7 @@ class CoreServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
-        Auth::extend(config('core.guard_name'), function($app) {
+        Auth::extend(config('core.guard_name'), function ($app) {
             return new CoreAuthGuard(Auth::createUserProvider(CoreAuthUserProvider::class), $app->make('request'));
         });
     }

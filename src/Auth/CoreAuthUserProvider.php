@@ -11,7 +11,7 @@ class CoreAuthUserProvider implements UserProvider
     {
         $userData = session('vauth_user');
 
-        if (!$userData || !isset($userData['id']) || $userData['id'] != $identifier) {
+        if (! $userData || ! isset($userData['id']) || $userData['id'] != $identifier) {
             return null;
         }
 
@@ -34,7 +34,7 @@ class CoreAuthUserProvider implements UserProvider
         // Check if user is authenticated via session
         $userData = session('vauth_user');
 
-        if (!$userData) {
+        if (! $userData) {
             return null;
         }
 
@@ -59,7 +59,7 @@ class CoreAuthUserProvider implements UserProvider
     {
         $userData = session('vauth_user');
 
-        if (!$userData) {
+        if (! $userData) {
             return null;
         }
 

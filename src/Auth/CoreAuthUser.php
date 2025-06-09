@@ -130,6 +130,7 @@ class CoreAuthUser implements Authenticatable, FilamentUser
         if ($key === null) {
             return $this->attributes;
         }
+
         return $this->attributes[$key] ?? $default;
     }
 
@@ -245,7 +246,7 @@ class CoreAuthUser implements Authenticatable, FilamentUser
 
     public function isNot($model): bool
     {
-        return !$this->is($model);
+        return ! $this->is($model);
     }
 
     // For debugging

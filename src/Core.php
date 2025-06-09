@@ -2,13 +2,14 @@
 
 namespace VoxDev\Core;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use VoxDev\Core\Helpers\VAuthHelper;
 
-class Core {
-     public function redirectUrl(Request $request): string
+class Core
+{
+    public function redirectUrl(Request $request): string
     {
         $request->session()->put('state', $state = Str::random(40));
         $request->session()->put('code_verifier', $codeVerifier = Str::random(128));
@@ -35,16 +36,17 @@ class Core {
     public function getLocations(): array
     {
         $token = VAuthHelper::getValidToken();
-        if (!$token) {
+        if (! $token) {
             return [];
         }
         $locations = Http::withToken($token)
-            ->get(config('vauth.url') . '/api/locations')
+            ->get(config('vauth.url').'/api/locations')
             ->json();
 
         if (is_array($locations)) {
             return $locations;
         }
+
         return [];
     }
 }

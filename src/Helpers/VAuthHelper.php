@@ -6,17 +6,17 @@ class VAuthHelper
 {
     public static function getAuthorizeUrl(string $query): string
     {
-        return config('vauth.url') . '/oauth/authorize?' . $query;
+        return config('vauth.url').'/oauth/authorize?'.$query;
     }
 
     public static function getTokenUrl(): string
     {
-        return config('vauth.url') . '/oauth/token';
+        return config('vauth.url').'/oauth/token';
     }
 
     public static function getUserApiUrl(): string
     {
-        return config('vauth.url') . '/api/user';
+        return config('vauth.url').'/api/user';
     }
 
     /**
@@ -40,12 +40,13 @@ class VAuthHelper
     {
         $expiresIn = $_COOKIE['vauth_expires_in'] ?? null;
 
-        if (!$expiresIn) {
+        if (! $expiresIn) {
             return true;
         }
 
         // Add buffer time (5 minutes) to refresh token before it actually expires
         $bufferTime = 300; // 5 minutes in seconds
+
         return (now()->timestamp + $bufferTime) >= intval($expiresIn);
     }
 
@@ -55,13 +56,13 @@ class VAuthHelper
     public static function getValidToken(): ?string
     {
         $accessToken = $_COOKIE['vauth_access_token'] ?? null;
-        
-        if (!$accessToken) {
+
+        if (! $accessToken) {
             return null;
         }
 
         // If token is not expired, return it
-        if (!self::isTokenExpired()) {
+        if (! self::isTokenExpired()) {
             return $accessToken;
         }
 
@@ -88,18 +89,19 @@ class VAuthHelper
     {
         $refreshToken = $_COOKIE['vauth_refresh_token'] ?? null;
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
             return false; // No refresh token available
         }
 
         $tokenData = self::refreshToken($refreshToken);
 
-        if (!isset($tokenData['access_token'])) {
+        if (! isset($tokenData['access_token'])) {
             // Log refresh failure for debugging
             \Illuminate\Support\Facades\Log::warning('Token refresh failed', [
                 'response' => $tokenData,
-                'refresh_token_exists' => !empty($refreshToken)
+                'refresh_token_exists' => ! empty($refreshToken),
             ]);
+
             return false; // Refresh failed
         }
 
@@ -189,7 +191,7 @@ class VAuthHelper
             'vauth_access_token',
             'vauth_token_type',
             'vauth_refresh_token',
-            'vauth_expires_in'
+            'vauth_expires_in',
         ];
 
         foreach ($cookieNames as $cookieName) {
@@ -207,7 +209,7 @@ class VAuthHelper
         $token = self::getValidToken();
         $tokenType = $_COOKIE['vauth_token_type'] ?? 'Bearer';
 
-        if (!$token) {
+        if (! $token) {
             return null;
         }
 
@@ -232,8 +234,8 @@ class VAuthHelper
         $tokenType = $_COOKIE['vauth_token_type'] ?? null;
 
         $status = [
-            'has_access_token' => !empty($accessToken),
-            'has_refresh_token' => !empty($refreshToken),
+            'has_access_token' => ! empty($accessToken),
+            'has_refresh_token' => ! empty($refreshToken),
             'token_type' => $tokenType,
             'expires_in' => $expiresIn,
             'expires_at' => $expiresIn ? date('Y-m-d H:i:s', $expiresIn) : null,

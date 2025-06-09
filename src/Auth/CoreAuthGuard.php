@@ -9,7 +9,9 @@ use Illuminate\Contracts\Session\Session;
 class CoreAuthGuard implements Guard
 {
     protected CoreAuthUserProvider $provider;
+
     protected Session $session;
+
     protected ?CoreAuthUser $user = null;
 
     public function __construct(CoreAuthUserProvider $provider, Session $session)
@@ -25,7 +27,7 @@ class CoreAuthGuard implements Guard
 
     public function guest(): bool
     {
-        return !$this->check();
+        return ! $this->check();
     }
 
     public function user(): ?Authenticatable
@@ -36,7 +38,7 @@ class CoreAuthGuard implements Guard
 
         $userData = $this->session->get('vauth_user');
 
-        if (!$userData) {
+        if (! $userData) {
             return null;
         }
 
@@ -46,6 +48,7 @@ class CoreAuthGuard implements Guard
     public function id()
     {
         $user = $this->user();
+
         return $user ? $user->getAuthIdentifier() : null;
     }
 
