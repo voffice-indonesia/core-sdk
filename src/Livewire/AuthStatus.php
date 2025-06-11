@@ -2,15 +2,18 @@
 
 namespace VoxDev\Core\Livewire;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use VoxDev\Core\Helpers\VAuthHelper;
-use Illuminate\Support\Facades\Auth;
 
 class AuthStatus extends Component
 {
     public $isAuthenticated = false;
+
     public $userName = null;
+
     public $userEmail = null;
+
     public $showUserMenu = false;
 
     public function mount()
@@ -49,7 +52,7 @@ class AuthStatus extends Component
 
     public function toggleUserMenu()
     {
-        $this->showUserMenu = !$this->showUserMenu;
+        $this->showUserMenu = ! $this->showUserMenu;
     }
 
     public function render()

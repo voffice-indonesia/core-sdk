@@ -3,13 +3,15 @@
 namespace VoxDev\Core\Livewire;
 
 use Livewire\Component;
-use VoxDev\Core\Helpers\VAuthHelper;
 
 class AuthCallback extends Component
 {
     public $processing = true;
+
     public $success = false;
+
     public $error = null;
+
     public $redirectUrl = null;
 
     public function mount()
@@ -24,14 +26,16 @@ class AuthCallback extends Component
             $error = request()->get('error');
 
             if ($error) {
-                $this->error = 'OAuth authorization failed: ' . $error;
+                $this->error = 'OAuth authorization failed: '.$error;
                 $this->processing = false;
+
                 return;
             }
 
-            if (!$code) {
+            if (! $code) {
                 $this->error = 'No authorization code received';
                 $this->processing = false;
+
                 return;
             }
 

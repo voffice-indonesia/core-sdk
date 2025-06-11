@@ -26,7 +26,7 @@ class ExampleController
 
         return view('dashboard', [
             'user' => $user,
-            'userData' => $userData
+            'userData' => $userData,
         ]);
     }
 
@@ -51,16 +51,17 @@ class ExampleController
     {
         $token = VAuthHelper::getValidToken();
 
-        if (!$token) {
+        if (! $token) {
             return redirect()->route('vauth.redirect');
         }
 
         // Make API call to your OAuth server
         $response = \Illuminate\Support\Facades\Http::withToken($token)
-            ->get(config('core.url') . '/api/some-endpoint');
+            ->get(config('core.url').'/api/some-endpoint');
 
         if ($response->successful()) {
             $data = $response->json();
+
             return response()->json($data);
         }
 
@@ -77,7 +78,7 @@ class ExampleController
 
         return response()->json([
             'authenticated' => $isAuthenticated,
-            'has_valid_token' => !is_null($token),
+            'has_valid_token' => ! is_null($token),
             'token_expired' => VAuthHelper::isTokenExpired(),
         ]);
     }

@@ -20,10 +20,10 @@ class CallbackController
 
         if ($error) {
             return redirect(config('core.login_url', '/'))
-                ->withErrors(['oauth' => 'OAuth authorization failed: ' . $error]);
+                ->withErrors(['oauth' => 'OAuth authorization failed: '.$error]);
         }
 
-        if (!$code) {
+        if (! $code) {
             return redirect(config('core.login_url', '/'))
                 ->withErrors(['oauth' => 'No authorization code received']);
         }
@@ -38,10 +38,10 @@ class CallbackController
                 'code' => $code,
             ]);
 
-            if (!$tokenResponse->successful()) {
+            if (! $tokenResponse->successful()) {
                 Log::error('OAuth token exchange failed', [
                     'status' => $tokenResponse->status(),
-                    'response' => $tokenResponse->body()
+                    'response' => $tokenResponse->body(),
                 ]);
 
                 return redirect(config('core.login_url', '/'))
@@ -50,7 +50,7 @@ class CallbackController
 
             $tokenData = $tokenResponse->json();
 
-            if (!isset($tokenData['access_token'])) {
+            if (! isset($tokenData['access_token'])) {
                 return redirect(config('core.login_url', '/'))
                     ->withErrors(['oauth' => 'Invalid token response']);
             }
@@ -76,7 +76,7 @@ class CallbackController
         } catch (\Exception $e) {
             Log::error('OAuth callback error', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect(config('core.login_url', '/'))

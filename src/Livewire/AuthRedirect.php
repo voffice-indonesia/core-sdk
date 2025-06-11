@@ -8,6 +8,7 @@ use VoxDev\Core\Core;
 class AuthRedirect extends Component
 {
     public $showLoading = false;
+
     public $errorMessage = null;
 
     public function mount()
@@ -23,7 +24,7 @@ class AuthRedirect extends Component
         $this->showLoading = true;
 
         try {
-            $coreService = new Core();
+            $coreService = new Core;
             $redirectUrl = $coreService->redirectUrl(request());
 
             return redirect()->away($redirectUrl);

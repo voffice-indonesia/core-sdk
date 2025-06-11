@@ -32,7 +32,7 @@ class CoreSetupCommand extends Command
         $this->callSilent('vendor:publish', [
             '--provider' => 'VoxDev\Core\CoreServiceProvider',
             '--tag' => 'core-sdk-config',
-            '--force' => $this->option('force')
+            '--force' => $this->option('force'),
         ]);
 
         $this->line('✓ Configuration file published to config/core.php');
@@ -42,8 +42,9 @@ class CoreSetupCommand extends Command
     {
         $envPath = base_path('.env');
 
-        if (!File::exists($envPath)) {
+        if (! File::exists($envPath)) {
             $this->warn('⚠️  .env file not found. Please create one and add the configuration manually.');
+
             return;
         }
 
@@ -59,14 +60,14 @@ class CoreSetupCommand extends Command
 
         $newVars = [];
         foreach ($envVars as $key => $defaultValue) {
-            if (!str_contains($envContent, $key . '=')) {
+            if (! str_contains($envContent, $key.'=')) {
                 $newVars[] = "{$key}={$defaultValue}";
             }
         }
 
-        if (!empty($newVars)) {
+        if (! empty($newVars)) {
             $this->info('📝 Adding environment variables...');
-            $envContent .= "\n\n# Core SDK Configuration\n" . implode("\n", $newVars) . "\n";
+            $envContent .= "\n\n# Core SDK Configuration\n".implode("\n", $newVars)."\n";
             File::put($envPath, $envContent);
             $this->line('✓ Environment variables added to .env file');
         } else {
@@ -83,7 +84,7 @@ class CoreSetupCommand extends Command
         $this->line('VAUTH_URL=https://your-oauth-server.com');
         $this->line('VAUTH_CLIENT_ID=your-client-id');
         $this->line('VAUTH_CLIENT_SECRET=your-client-secret');
-        $this->line('VAUTH_REDIRECT_URI=' . url('/vauth/callback'));
+        $this->line('VAUTH_REDIRECT_URI='.url('/vauth/callback'));
         $this->line('');
     }
 

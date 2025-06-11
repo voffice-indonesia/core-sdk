@@ -37,7 +37,7 @@ class CoreServiceProvider extends PackageServiceProvider
         // Register custom auth guard
         Auth::extend(config('core.guard_name', 'core'), function ($app) {
             return new CoreAuthGuard(
-                new AuthCoreAuthUserProvider(),
+                new AuthCoreAuthUserProvider,
                 $app['session.store']
             );
         });
@@ -61,7 +61,7 @@ class CoreServiceProvider extends PackageServiceProvider
     public function registeringPackage()
     {
         // Merge additional configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/core.php', 'core');
+        $this->mergeConfigFrom(__DIR__.'/../config/core.php', 'core');
     }
 
     public function packageBooted()

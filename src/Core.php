@@ -40,7 +40,7 @@ class Core
             return [];
         }
         $locations = Http::withToken($token)
-            ->get(config('core.url') . '/api/locations')
+            ->get(config('core.url').'/api/locations')
             ->json();
 
         if (is_array($locations)) {

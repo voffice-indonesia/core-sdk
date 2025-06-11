@@ -21,7 +21,7 @@ class VAuthMiddleware
         // Get valid token (will refresh automatically if needed)
         $token = VAuthHelper::getValidToken();
 
-        if (!$token) {
+        if (! $token) {
             // Store intended URL for redirect after login
             session(['url.intended' => $request->url()]);
 
@@ -32,10 +32,11 @@ class VAuthMiddleware
         // Get user info using the valid token
         $userInfo = VAuthHelper::getUserInfo();
 
-        if (!$userInfo) {
+        if (! $userInfo) {
             // API call failed even with valid token, clear cookies and redirect
             VAuthHelper::clearAuthCookies();
             session(['url.intended' => $request->url()]);
+
             return redirect(config('core.login_url', '/vauth/redirect'));
         }
 
