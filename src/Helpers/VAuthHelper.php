@@ -6,17 +6,17 @@ class VAuthHelper
 {
     public static function getAuthorizeUrl(string $query): string
     {
-        return config('core.url').'/oauth/authorize?'.$query;
+        return config('core.url') . '/oauth/authorize?' . $query;
     }
 
     public static function getTokenUrl(): string
     {
-        return config('core.url').'/oauth/token';
+        return config('core.url') . '/oauth/token';
     }
 
     public static function getUserApiUrl(): string
     {
-        return config('core.url').'/api/user';
+        return config('core.url') . '/api/user';
     }
 
     /**
@@ -99,7 +99,7 @@ class VAuthHelper
             // Log refresh failure for debugging
             \Illuminate\Support\Facades\Log::warning('Token refresh failed', [
                 'response' => $tokenData,
-                'refresh_token_exists' => ($refreshToken !== null && $refreshToken !== ''),
+                'refresh_token_exists' => true,
             ]);
 
             return false; // Refresh failed

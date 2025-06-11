@@ -7,6 +7,11 @@ use Illuminate\Contracts\Auth\UserProvider;
 
 class CoreAuthUserProvider implements UserProvider
 {
+    /**
+     * @return CoreAuthUser|null
+     *
+     * @phpstan-return CoreAuthUser|null
+     */
     public function retrieveById($identifier): ?Authenticatable
     {
         $userData = session('vauth_user');
@@ -29,6 +34,11 @@ class CoreAuthUserProvider implements UserProvider
         // Not implemented for OAuth
     }
 
+    /**
+     * @return CoreAuthUser|null
+     *
+     * @phpstan-return CoreAuthUser|null
+     */
     public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         // Check if user is authenticated via session

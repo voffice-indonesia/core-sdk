@@ -3,7 +3,9 @@
 namespace VoxDev\Core\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
+use VoxDev\Core\Auth\CoreAuthUser;
 use VoxDev\Core\Helpers\VAuthHelper;
 
 class AuthStatus extends Component
@@ -27,8 +29,10 @@ class AuthStatus extends Component
 
         if ($this->isAuthenticated) {
             $user = Auth::guard(config('core.guard_name', 'core'))->user();
-            $this->userName = $user->getName();
-            $this->userEmail = $user->getEmail();
+            if ($user instanceof CoreAuthUser) {
+                $this->userName = $user->getName();
+                $this->userEmail = $user->getEmail();
+            }
         }
     }
 
@@ -55,7 +59,7 @@ class AuthStatus extends Component
         $this->showUserMenu = ! $this->showUserMenu;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('core::livewire.auth-status');
     }

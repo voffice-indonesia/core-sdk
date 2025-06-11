@@ -4,6 +4,7 @@ namespace VoxDev\Core\Examples;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use VoxDev\Core\Auth\CoreAuthUser;
 use VoxDev\Core\Helpers\VAuthHelper;
 
 /**
@@ -37,11 +38,15 @@ class ExampleController
     {
         $user = Auth::guard('core')->user();
 
-        return view('profile', [
-            'name' => $user->getName(),
-            'email' => $user->getEmail(),
-            'id' => $user->getId(),
-        ]);
+        if ($user instanceof CoreAuthUser) {
+            return view('profile', [
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
+                'id' => $user->getId(),
+            ]);
+        }
+
+        return redirect()->route('vauth.redirect');
     }
 
     /**
@@ -57,7 +62,7 @@ class ExampleController
 
         // Make API call to your OAuth server
         $response = \Illuminate\Support\Facades\Http::withToken($token)
-            ->get(config('core.url').'/api/some-endpoint');
+            ->get(config('core.url') . '/api/some-endpoint');
 
         if ($response->successful()) {
             $data = $response->json();

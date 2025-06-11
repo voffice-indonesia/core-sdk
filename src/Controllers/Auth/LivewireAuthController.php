@@ -2,14 +2,16 @@
 
 namespace VoxDev\Core\Controllers\Auth;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class LivewireAuthController
 {
     /**
      * Show the OAuth login page
      */
-    public function login()
+    public function login(): View|RedirectResponse
     {
         // Check if already authenticated
         if (auth()->guard(config('core.guard_name', 'core'))->check()) {
@@ -22,7 +24,7 @@ class LivewireAuthController
     /**
      * Show the OAuth callback processing page
      */
-    public function callbackUi(Request $request)
+    public function callbackUi(Request $request): View|RedirectResponse
     {
         // If there's an error or code, show the callback processing page
         if ($request->has(['code', 'error'])) {
@@ -36,7 +38,7 @@ class LivewireAuthController
     /**
      * Show the sample dashboard
      */
-    public function dashboard()
+    public function dashboard(): View
     {
         return view('core::dashboard');
     }

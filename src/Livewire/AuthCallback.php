@@ -2,6 +2,7 @@
 
 namespace VoxDev\Core\Livewire;
 
+use Illuminate\View\View;
 use Livewire\Component;
 
 class AuthCallback extends Component
@@ -26,7 +27,7 @@ class AuthCallback extends Component
             $error = request()->get('error');
 
             if ($error) {
-                $this->error = 'OAuth authorization failed: '.$error;
+                $this->error = 'OAuth authorization failed: ' . $error;
                 $this->processing = false;
 
                 return;
@@ -53,7 +54,7 @@ class AuthCallback extends Component
         $this->processing = false;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('core::livewire.auth-callback');
     }

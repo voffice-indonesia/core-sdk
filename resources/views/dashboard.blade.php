@@ -52,10 +52,13 @@
                                         Authentication Status: Active
                                     </h3>
                                     <div class="mt-2 text-sm text-green-700">
-                                        <p>User: {{ auth()->guard(config('core.guard_name', 'core'))->user()->getName() }}
-                                        </p>
-                                        <p>Email: {{ auth()->guard(config('core.guard_name', 'core'))->user()->getEmail() }}
-                                        </p>
+                                        @php
+                                            $user = auth()->guard(config('core.guard_name', 'core'))->user();
+                                        @endphp
+                                        @if ($user instanceof \VoxDev\Core\Auth\CoreAuthUser)
+                                            <p>User: {{ $user->getName() }}</p>
+                                            <p>Email: {{ $user->getEmail() }}</p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

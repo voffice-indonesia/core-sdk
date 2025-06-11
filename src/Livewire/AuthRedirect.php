@@ -2,6 +2,7 @@
 
 namespace VoxDev\Core\Livewire;
 
+use Illuminate\View\View;
 use Livewire\Component;
 use VoxDev\Core\Core;
 
@@ -34,7 +35,7 @@ class AuthRedirect extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('core::livewire.auth-redirect');
     }

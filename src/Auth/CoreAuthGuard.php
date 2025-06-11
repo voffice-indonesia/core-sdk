@@ -62,9 +62,11 @@ class CoreAuthGuard implements Guard
         return $this->user !== null;
     }
 
-    public function setUser(Authenticatable $user): void
+    public function setUser(Authenticatable $user): Guard
     {
         $this->user = $user instanceof CoreAuthUser ? $user : null;
+
+        return $this;
     }
 
     public function login(Authenticatable $user): void
