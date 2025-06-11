@@ -6,17 +6,17 @@ class VAuthHelper
 {
     public static function getAuthorizeUrl(string $query): string
     {
-        return config('vauth.url').'/oauth/authorize?'.$query;
+        return config('core.url') . '/oauth/authorize?' . $query;
     }
 
     public static function getTokenUrl(): string
     {
-        return config('vauth.url').'/oauth/token';
+        return config('core.url') . '/oauth/token';
     }
 
     public static function getUserApiUrl(): string
     {
-        return config('vauth.url').'/api/user';
+        return config('core.url') . '/api/user';
     }
 
     /**
@@ -27,7 +27,7 @@ class VAuthHelper
         $response = \Illuminate\Support\Facades\Http::asForm()->post(self::getTokenUrl(), [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refreshToken,
-            'client_id' => config('vauth.client_id'),
+            'client_id' => config('core.client_id'),
         ]);
 
         return $response->json();
@@ -57,7 +57,7 @@ class VAuthHelper
     {
         $accessToken = $_COOKIE['vauth_access_token'] ?? null;
 
-        if (! $accessToken) {
+        if (!$accessToken) {
             return null;
         }
 
@@ -99,7 +99,7 @@ class VAuthHelper
             // Log refresh failure for debugging
             \Illuminate\Support\Facades\Log::warning('Token refresh failed', [
                 'response' => $tokenData,
-                'refresh_token_exists' => ! empty($refreshToken),
+                'refresh_token_exists' => ($refreshToken !== null && $refreshToken !== '')
             ]);
 
             return false; // Refresh failed
@@ -116,7 +116,7 @@ class VAuthHelper
      */
     public static function setCookiesFromTokenData(array $tokenData): void
     {
-        $domain = config('vauth.domain');
+        $domain = config('core.domain');
 
         // Calculate expiration time in minutes for Laravel cookies
         $accessTokenExpires = isset($tokenData['expires_in'])
@@ -185,7 +185,7 @@ class VAuthHelper
      */
     public static function clearAuthCookies(): void
     {
-        $domain = config('vauth.domain');
+        $domain = config('core.domain');
 
         $cookieNames = [
             'vauth_access_token',
@@ -202,25 +202,37 @@ class VAuthHelper
     }
 
     /**
-     * Get user info from API using current token
+     * Get user information from the OAuth server using the access token
      */
     public static function getUserInfo(): ?array
     {
         $token = self::getValidToken();
-        $tokenType = $_COOKIE['vauth_token_type'] ?? 'Bearer';
 
         if (! $token) {
             return null;
         }
 
-        $response = \Illuminate\Support\Facades\Http::withToken($token, $tokenType)
-            ->get(self::getUserApiUrl());
+        try {
+            $response = \Illuminate\Support\Facades\Http::withToken($token)
+                ->get(self::getUserApiUrl());
 
-        if ($response->successful()) {
-            return $response->json();
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            // Log the error for debugging
+            \Illuminate\Support\Facades\Log::warning('Failed to get user info', [
+                'status' => $response->status(),
+                'response' => $response->body()
+            ]);
+
+            return null;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Exception while getting user info', [
+                'message' => $e->getMessage()
+            ]);
+            return null;
         }
-
-        return null;
     }
 
     /**

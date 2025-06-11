@@ -20,10 +20,10 @@ class Core
         ), '+/', '-_');
 
         $query = http_build_query([
-            'client_id' => config('vauth.client_id'),
-            'redirect_uri' => config('vauth.redirect_uri'),
+            'client_id' => config('core.client_id'),
+            'redirect_uri' => config('core.redirect_uri'),
             'response_type' => 'code',
-            'scope' => 'user:read',
+            'scope' => config('core.scopes', 'user:read'),
             'state' => $state,
             'code_challenge' => $codeChallenge,
             'code_challenge_method' => 'S256',
@@ -40,7 +40,7 @@ class Core
             return [];
         }
         $locations = Http::withToken($token)
-            ->get(config('vauth.url').'/api/locations')
+            ->get(config('core.url') . '/api/locations')
             ->json();
 
         if (is_array($locations)) {

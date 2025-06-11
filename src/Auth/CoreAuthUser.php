@@ -236,7 +236,7 @@ class CoreAuthUser implements Authenticatable, FilamentUser
 
     public function replicate(?array $except = null)
     {
-        return new static($this->attributes);
+        return new self($this->attributes);
     }
 
     public function is($model): bool

@@ -1,59 +1,238 @@
-# SDK for using single of truth authentication service(vAuth) in other internal vOffice app with seamless integration.
+# Core SDK - Laravel Passport OAuth Integration
+
+A plug-and-play Laravel package for seamless OAuth integration with Laravel Passport servers. Install, configure, and you're ready to go!
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/voffice-indonesia/core-sdk.svg?style=flat-square)](https://packagist.org/packages/voffice-indonesia/core-sdk)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/voffice-indonesia/core-sdk/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/voffice-indonesia/core-sdk/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/voffice-indonesia/core-sdk/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/voffice-indonesia/core-sdk/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/voffice-indonesia/core-sdk.svg?style=flat-square)](https://packagist.org/packages/voffice-indonesia/core-sdk)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Features
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/core-sdk.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/core-sdk)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+- 🚀 **Plug & Play**: Simple installation and configuration
+- 🔐 **Secure Authentication**: OAuth2 flow with automatic token refresh
+- 🛡️ **Middleware Protection**: Easy route protection
+- 🎨 **Filament Ready**: Built-in support for Filament Admin panels
+- 🍪 **Cookie Management**: Automatic token storage and refresh
+- ⚡ **Laravel Integration**: Custom auth guard and user provider
+- 🎭 **Livewire Components**: Pre-built UI components for authentication
+- 📦 **Publishable**: Customize views and components to match your design
 
 ## Installation
 
-You can install the package via composer:
+Install the package via Composer:
 
 ```bash
 composer require voffice-indonesia/core-sdk
 ```
 
-You can publish and run the migrations with:
+Run the setup command:
 
 ```bash
-php artisan vendor:publish --tag="core-sdk-migrations"
-php artisan migrate
+php artisan core:setup
 ```
 
-You can publish the config file with:
+This will:
+- Publish the configuration file
+- Add environment variables to your `.env` file
+- Show you the next steps
 
-```bash
-php artisan vendor:publish --tag="core-sdk-config"
-```
+## Configuration
 
-This is the contents of the published config file:
+Update your `.env` file with your OAuth server details:
 
-```php
-return [
-];
-```
+```env
+# OAuth Server Configuration
+VAUTH_URL=https://your-oauth-server.com
+VAUTH_CLIENT_ID=your-client-id
+VAUTH_CLIENT_SECRET=your-client-secret
+VAUTH_REDIRECT_URI=https://your-app.com/vauth/callback
+VAUTH_DOMAIN=your-domain.com
+VAUTH_SCOPES=user:read
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="core-sdk-views"
+# Optional Configuration
+VAUTH_GUARD_NAME=core
+VAUTH_DEFAULT_REDIRECT=/dashboard
+VAUTH_LOGIN_URL=/vauth/redirect
 ```
 
 ## Usage
 
+### 1. Protecting Routes
+
+Use the `vauth` middleware to protect your routes:
+
 ```php
-$core = new VoxDev\Core();
-echo $core->echoPhrase('Hello, VoxDev!');
+// In your routes/web.php
+Route::middleware(['vauth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+});
+
+// Or on individual routes
+Route::get('/admin', [AdminController::class, 'index'])->middleware('vauth');
+```
+
+### 2. Filament Integration
+
+For Filament panels, update your panel provider:
+
+```php
+// In your Filament Panel Provider
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->default()
+        ->id('admin')
+        ->path('/admin')
+        ->authGuard('core') // Use the core guard
+        ->login() // This will redirect to OAuth if not authenticated
+        // ... other panel configuration
+}
+```
+
+### 3. Accessing User Data
+
+Get the authenticated user:
+
+```php
+// Using the core guard
+$user = Auth::guard('core')->user();
+
+// Or in controllers/middleware
+$user = session('vauth_user'); // Raw user data array
+```
+
+### 4. Available Routes
+
+The package automatically registers these routes:
+
+- `GET /vauth/redirect` - Redirects to OAuth server
+- `GET /vauth/callback` - Handles OAuth callback
+- `POST /vauth/logout` - Logs out the user
+
+**Optional Livewire-powered UI routes:**
+- `GET /oauth/login` - Login page with Livewire component
+- `GET /oauth/callback-ui` - Callback processing page
+- `GET /oauth/dashboard` - Sample dashboard (protected route)
+
+### 5. Livewire Components
+
+The package includes ready-to-use Livewire components:
+
+```blade
+{{-- Login/redirect component --}}
+<livewire:core-auth-redirect />
+
+{{-- Callback processing component --}}
+<livewire:core-auth-callback />
+
+{{-- User status/menu component --}}
+<livewire:core-auth-status />
+```
+
+### 6. Publishing Views and Components
+
+You can publish and customize the views and components:
+
+```bash
+# Publish all views
+php artisan vendor:publish --tag=core-sdk-views
+
+# Publish page templates only
+php artisan vendor:publish --tag=core-sdk-pages
+
+# Publish Livewire components for customization
+php artisan vendor:publish --tag=core-sdk-livewire
+
+# Publish configuration
+php artisan vendor:publish --tag=core-sdk-config
+```
+
+After publishing views, they'll be available in:
+- `resources/views/vendor/core/` (all views)
+- `resources/views/auth/oauth-*.blade.php` (page templates)
+- `app/Livewire/Core/` (Livewire components)
+
+### 7. Customizing the UI
+
+After publishing, you can customize the authentication flow:
+
+```blade
+{{-- In your own blade file --}}
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <livewire:core-auth-redirect />
+    </div>
+@endsection
+```
+
+Or create your own components:
+
+```php
+// app/Livewire/Core/AuthRedirect.php (after publishing)
+class AuthRedirect extends Component
+{
+    // Customize the component behavior
+    public function redirectToOAuth()
+    {
+        // Your custom logic here
+        // ...
+    }
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Invalid redirect URI"** - Ensure `VAUTH_REDIRECT_URI` matches exactly what's configured in your OAuth server
+2. **"Token refresh failed"** - Check that your OAuth server supports refresh tokens and verify client credentials
+3. **"User info API failed"** - Ensure your OAuth server has a `/api/user` endpoint that returns user data
+
+### Debug Mode
+
+Enable debug logging by adding to your `.env`:
+
+```env
+LOG_LEVEL=debug
+```
+
+Check `storage/logs/laravel.log` for detailed OAuth flow information.
+
+## Documentation
+
+- 📖 **[Livewire Integration Guide](LIVEWIRE_GUIDE.md)** - Comprehensive guide for using and customizing Livewire components
+- 🔧 **Configuration Reference** - All available configuration options in `config/core.php`
+- 🛠️ **API Reference** - Helper methods in `VAuthHelper` class
+
+## Requirements
+
+- PHP 8.4+
+- Laravel 10.0+ || 11.0+ || 12.0+
+- Livewire 3.0+ (automatically installed)
+- A Laravel Passport OAuth2 server
+
+## OAuth Server Requirements
+
+Your OAuth server should have:
+
+1. **OAuth Client**: Create a client with your redirect URI
+2. **API Endpoints**:
+   - `GET /oauth/authorize` - Authorization endpoint
+   - `POST /oauth/token` - Token endpoint
+   - `GET /api/user` - User info endpoint (protected)
+
+3. **User API Response**: Should return user data in this format:
+```json
+{
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "avatar": "https://example.com/avatar.jpg"
+}
 ```
 
 ## Testing
@@ -62,17 +241,9 @@ echo $core->echoPhrase('Hello, VoxDev!');
 composer test
 ```
 
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
 

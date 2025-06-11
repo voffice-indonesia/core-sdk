@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace VoxDev\Core\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -21,27 +21,30 @@ class VAuthMiddleware
         // Get valid token (will refresh automatically if needed)
         $token = VAuthHelper::getValidToken();
 
-        if (! $token) {
+        if (!$token) {
+            // Store intended URL for redirect after login
+            session(['url.intended' => $request->url()]);
+
             // No valid token available, redirect to login
-            return redirect(config('vauth.login_url'));
+            return redirect(config('core.login_url', '/vauth/redirect'));
         }
 
         // Get user info using the valid token
         $userInfo = VAuthHelper::getUserInfo();
 
-        if (! $userInfo) {
+        if (!$userInfo) {
             // API call failed even with valid token, clear cookies and redirect
             VAuthHelper::clearAuthCookies();
-
-            return redirect(config('vauth.login_url'));
+            session(['url.intended' => $request->url()]);
+            return redirect(config('core.login_url', '/vauth/redirect'));
         }
 
         // Store the user data in the session for controllers to use
         session(['vauth_user' => $userInfo]);
 
-        // Login the user with the vauth guard for Filament
-        $vAuthUser = new CoreAuthUser($userInfo);
-        Auth::guard('vauth')->login($vAuthUser);
+        // Login the user with the core guard for Filament
+        $coreUser = new CoreAuthUser($userInfo);
+        Auth::guard(config('core.guard_name', 'core'))->login($coreUser);
 
         return $next($request);
     }

@@ -32,6 +32,6 @@ class CoreController
         $request->session()->forget('vauth_user');
 
         // Redirect to login page or home
-        return redirect(config('vauth.login_url', '/'));
+        return redirect(config('core.login_url', '/'));
     }
 }
