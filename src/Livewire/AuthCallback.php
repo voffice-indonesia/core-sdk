@@ -27,7 +27,7 @@ class AuthCallback extends Component
             $error = request()->get('error');
 
             if ($error) {
-                $this->error = 'OAuth authorization failed: ' . $error;
+                $this->error = 'OAuth authorization failed: '.$error;
                 $this->processing = false;
 
                 return;

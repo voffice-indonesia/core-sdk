@@ -17,7 +17,7 @@ class NumberFormatHelper
     {
         // Handle zero or empty values
         if ($number == 0 || $number == '') {
-            return $currency . '0';
+            return $currency.'0';
         }
 
         // Make sure the number is positive for calculations (we'll add the minus sign later if needed)
@@ -27,19 +27,19 @@ class NumberFormatHelper
         // Format based on size
         if ($number < 1000) {
             // Numbers less than 1,000
-            return $sign . $currency . self::formatNumber($number, 0, $separate);
+            return $sign.$currency.self::formatNumber($number, 0, $separate);
         } elseif ($number < 1000000) {
             // Numbers between 1,000 and 1,000,000 (K)
-            return $sign . $currency . self::formatNumber($number / 1000, $precision, $separate) . 'K';
+            return $sign.$currency.self::formatNumber($number / 1000, $precision, $separate).'K';
         } elseif ($number < 1000000000) {
             // Numbers between 1,000,000 and 1,000,000,000 (M)
-            return $sign . $currency . self::formatNumber($number / 1000000, $precision, $separate) . 'M';
+            return $sign.$currency.self::formatNumber($number / 1000000, $precision, $separate).'M';
         } elseif ($number < 1000000000000) {
             // Numbers between 1,000,000,000 and 1,000,000,000,000 (B)
-            return $sign . $currency . self::formatNumber($number / 1000000000, $precision, $separate) . 'B';
+            return $sign.$currency.self::formatNumber($number / 1000000000, $precision, $separate).'B';
         } else {
             // Numbers over 1,000,000,000,000 (T)
-            return $sign . $currency . self::formatNumber($number / 1000000000000, $precision, $separate) . 'T';
+            return $sign.$currency.self::formatNumber($number / 1000000000000, $precision, $separate).'T';
         }
     }
 

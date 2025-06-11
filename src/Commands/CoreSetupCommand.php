@@ -54,20 +54,20 @@ class CoreSetupCommand extends Command
             'VAUTH_DOMAIN' => 'your-domain.com',
             'VAUTH_CLIENT_ID' => 'your-client-id',
             'VAUTH_CLIENT_SECRET' => 'your-client-secret',
-            'VAUTH_REDIRECT_URI' => config('app.url', 'https://your-app.com') . '/vauth/callback',
+            'VAUTH_REDIRECT_URI' => config('app.url', 'https://your-app.com').'/vauth/callback',
             'VAUTH_SCOPES' => 'user:read',
         ];
 
         $newVars = [];
         foreach ($envVars as $key => $defaultValue) {
-            if (! str_contains($envContent, $key . '=')) {
+            if (! str_contains($envContent, $key.'=')) {
                 $newVars[] = "{$key}={$defaultValue}";
             }
         }
 
         if (! empty($newVars)) {
             $this->info('📝 Adding environment variables...');
-            $envContent .= "\n\n# Core SDK Configuration\n" . implode("\n", $newVars) . "\n";
+            $envContent .= "\n\n# Core SDK Configuration\n".implode("\n", $newVars)."\n";
             File::put($envPath, $envContent);
             $this->line('✓ Environment variables added to .env file');
         } else {
@@ -84,7 +84,7 @@ class CoreSetupCommand extends Command
         $this->line('VAUTH_URL=https://your-oauth-server.com');
         $this->line('VAUTH_CLIENT_ID=your-client-id');
         $this->line('VAUTH_CLIENT_SECRET=your-client-secret');
-        $this->line('VAUTH_REDIRECT_URI=' . config('app.url', 'https://your-app.com') . '/vauth/callback');
+        $this->line('VAUTH_REDIRECT_URI='.config('app.url', 'https://your-app.com').'/vauth/callback');
         $this->line('');
     }
 

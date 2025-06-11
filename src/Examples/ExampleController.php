@@ -62,7 +62,7 @@ class ExampleController
 
         // Make API call to your OAuth server
         $response = \Illuminate\Support\Facades\Http::withToken($token)
-            ->get(config('core.url') . '/api/some-endpoint');
+            ->get(config('core.url').'/api/some-endpoint');
 
         if ($response->successful()) {
             $data = $response->json();
