@@ -4,6 +4,7 @@ namespace VoxDev\Core\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use VoxDev\Core\Core;
+use VoxDev\Core\Events\UserLoggedOut;
 use VoxDev\Core\Helpers\VAuthHelper;
 
 class CoreController
@@ -25,6 +26,9 @@ class CoreController
 
     public function logout(Request $request)
     {
+        // Dispatch logout event
+        event(new UserLoggedOut());
+
         // Clear authentication cookies
         VAuthHelper::clearAuthCookies();
 

@@ -32,10 +32,15 @@ Run the setup command:
 php artisan core:setup
 ```
 
-This will:
-- Publish the configuration file
-- Add environment variables to your `.env` file
-- Show you the next steps
+**That's it!** The SDK automatically registers:
+- ✅ Custom auth guard (`core`)
+- ✅ OAuth routes (`/vauth/*` and `/oauth/*`)
+- ✅ Middleware (`vauth` and `auth.oauth` group)
+- ✅ Livewire components
+- ✅ Event listeners for OAuth flows
+- ✅ Session and cookie configuration
+- ✅ Filament integration (if Filament is installed)
+- ✅ Configuration auto-merge
 
 ## Configuration
 
@@ -49,11 +54,42 @@ VAUTH_CLIENT_SECRET=your-client-secret
 VAUTH_REDIRECT_URI=https://your-app.com/vauth/callback
 VAUTH_DOMAIN=your-domain.com
 VAUTH_SCOPES=user:read
+```
 
-# Optional Configuration
-VAUTH_GUARD_NAME=core
-VAUTH_DEFAULT_REDIRECT=/dashboard
-VAUTH_LOGIN_URL=/vauth/redirect
+**No additional configuration files needed!** Everything is auto-registered.
+
+### Auto-Registration Features
+
+The SDK includes intelligent auto-registration that can be controlled via environment variables:
+
+```env
+# Auto-Registration Control (all default to true)
+VAUTH_AUTO_REGISTER_GUARD=true           # Auto-register auth guard
+VAUTH_AUTO_REGISTER_MIDDLEWARE=true      # Auto-register middleware
+VAUTH_AUTO_REGISTER_ROUTES=true          # Auto-register OAuth routes
+VAUTH_AUTO_REGISTER_LIVEWIRE=true        # Auto-register Livewire components
+VAUTH_AUTO_REGISTER_EVENTS=true          # Auto-register OAuth events
+VAUTH_AUTO_CONFIGURE_FILAMENT=true       # Auto-configure Filament (if installed)
+VAUTH_AUTO_CONFIGURE_SESSION=true        # Auto-configure session settings
+```
+
+**Automatic Middleware Groups**: Creates `auth.oauth` middleware group combining `web` + `vauth`.
+
+**Automatic Route Protection**: Configure route patterns for automatic OAuth protection:
+
+```php
+// In config/core.php after publishing
+'protected_route_patterns' => [
+    'admin/*',
+    'dashboard/*',
+    'profile/*',
+],
+'exclude_route_patterns' => [
+    'auth/*',
+    'login',
+    'register',
+    'vauth/*',
+],
 ```
 
 ## Usage

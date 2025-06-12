@@ -51,4 +51,41 @@ return [
     'token_refresh_threshold' => env('VAUTH_TOKEN_REFRESH_THRESHOLD', 300), // 5 minutes in seconds
     'cookie_secure' => env('VAUTH_COOKIE_SECURE', false),
     'cookie_same_site' => env('VAUTH_COOKIE_SAME_SITE', 'lax'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-Registration Settings
+    |--------------------------------------------------------------------------
+    |
+    | These settings control the automatic registration and configuration
+    | of authentication components for plug-and-play functionality.
+    |
+    */
+    'auto_register_guard' => env('VAUTH_AUTO_REGISTER_GUARD', true),
+    'auto_register_middleware' => env('VAUTH_AUTO_REGISTER_MIDDLEWARE', true),
+    'auto_register_routes' => env('VAUTH_AUTO_REGISTER_ROUTES', true),
+    'auto_register_livewire' => env('VAUTH_AUTO_REGISTER_LIVEWIRE', true),
+    'auto_register_events' => env('VAUTH_AUTO_REGISTER_EVENTS', true),
+    'auto_configure_filament' => env('VAUTH_AUTO_CONFIGURE_FILAMENT', true),
+    'auto_configure_session' => env('VAUTH_AUTO_CONFIGURE_SESSION', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Protection
+    |--------------------------------------------------------------------------
+    |
+    | Configure which routes should be automatically protected with OAuth.
+    |
+    */
+    'protected_route_patterns' => [
+        'admin/*',
+        'dashboard/*',
+        'profile/*',
+    ],
+    'exclude_route_patterns' => [
+        'auth/*',
+        'login',
+        'register',
+        'vauth/*',
+    ],
 ];

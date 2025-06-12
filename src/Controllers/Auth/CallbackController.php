@@ -5,6 +5,8 @@ namespace VoxDev\Core\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use VoxDev\Core\Auth\CoreAuthUser;
+use VoxDev\Core\Events\UserLoggedIn;
 use VoxDev\Core\Helpers\VAuthHelper;
 
 class CallbackController
@@ -20,7 +22,7 @@ class CallbackController
 
         if ($error) {
             return redirect(config('core.login_url', '/'))
-                ->withErrors(['oauth' => 'OAuth authorization failed: '.$error]);
+                ->withErrors(['oauth' => 'OAuth authorization failed: ' . $error]);
         }
 
         if (! $code) {
@@ -66,6 +68,10 @@ class CallbackController
                 $userData = $userResponse->json();
                 // Store user data in session
                 session(['vauth_user' => $userData]);
+
+                // Create CoreAuthUser instance and dispatch login event
+                $user = new CoreAuthUser($userData);
+                event(new UserLoggedIn($user));
             }
 
             // Redirect to intended URL or dashboard
