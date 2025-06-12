@@ -22,7 +22,7 @@ class CallbackController
 
         if ($error) {
             return redirect(config('core.login_url', '/'))
-                ->withErrors(['oauth' => 'OAuth authorization failed: ' . $error]);
+                ->withErrors(['oauth' => 'OAuth authorization failed: '.$error]);
         }
 
         if (! $code) {

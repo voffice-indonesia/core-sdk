@@ -79,7 +79,7 @@ class CoreServiceProvider extends PackageServiceProvider
     public function registeringPackage()
     {
         // Merge additional configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/core.php', 'core');
+        $this->mergeConfigFrom(__DIR__.'/../config/core.php', 'core');
     }
 
     public function packageBooted()
@@ -186,7 +186,7 @@ class CoreServiceProvider extends PackageServiceProvider
     {
         // Register routes automatically - no need for manual route file inclusion
         if (! $this->app->routesAreCached()) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         }
     }
 
@@ -202,7 +202,7 @@ class CoreServiceProvider extends PackageServiceProvider
         if (! $router->hasMiddlewareGroup('auth.oauth')) {
             $router->middlewareGroup('auth.oauth', [
                 'web',
-                'vauth'
+                'vauth',
             ]);
         }
 
@@ -211,7 +211,7 @@ class CoreServiceProvider extends PackageServiceProvider
         if (! empty($protectedPatterns) && ! $router->hasMiddlewareGroup('auto.oauth')) {
             $router->middlewareGroup('auto.oauth', [
                 'web',
-                'vauth'
+                'vauth',
             ]);
         }
     }
@@ -294,7 +294,7 @@ class CoreServiceProvider extends PackageServiceProvider
         if (! config('core.cookie_secure')) {
             config([
                 'core.cookie_secure' => app()->environment('production'),
-                'core.cookie_same_site' => 'lax'
+                'core.cookie_same_site' => 'lax',
             ]);
         }
 
@@ -316,7 +316,7 @@ class CoreServiceProvider extends PackageServiceProvider
                 function ($event) {
                     logger()->info('OAuth user logged in', [
                         'user_id' => $event->user->id ?? 'unknown',
-                        'email' => $event->user->email ?? 'unknown'
+                        'email' => $event->user->email ?? 'unknown',
                     ]);
                 }
             );

@@ -27,7 +27,7 @@ class CoreController
     public function logout(Request $request)
     {
         // Dispatch logout event
-        event(new UserLoggedOut());
+        event(new UserLoggedOut);
 
         // Clear authentication cookies
         VAuthHelper::clearAuthCookies();

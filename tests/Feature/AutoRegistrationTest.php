@@ -4,11 +4,9 @@ namespace VoxDev\Core\Tests\Feature;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Livewire\Livewire;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use VoxDev\Core\Auth\CoreAuthGuard;
-use VoxDev\Core\Auth\CoreAuthUserProvider;
 use VoxDev\Core\CoreServiceProvider;
 use VoxDev\Core\Events\UserLoggedIn;
 use VoxDev\Core\Events\UserLoggedOut;
@@ -111,7 +109,7 @@ class AutoRegistrationTest extends TestCase
         // Verify that events can be instantiated
         $user = new \VoxDev\Core\Auth\CoreAuthUser(['id' => 1, 'email' => 'test@example.com']);
         $loginEvent = new UserLoggedIn($user);
-        $logoutEvent = new UserLoggedOut();
+        $logoutEvent = new UserLoggedOut;
 
         $this->assertInstanceOf(UserLoggedIn::class, $loginEvent);
         $this->assertInstanceOf(UserLoggedOut::class, $logoutEvent);
