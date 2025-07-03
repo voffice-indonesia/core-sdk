@@ -49,7 +49,7 @@ class HttpOAuthService implements OAuthServiceInterface
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('Failed to exchange code for tokens: ' . $response->body());
+            throw new \Exception('Failed to exchange code for tokens: '.$response->body());
         }
 
         return $response->json();
@@ -65,7 +65,7 @@ class HttpOAuthService implements OAuthServiceInterface
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('Failed to refresh token: ' . $response->body());
+            throw new \Exception('Failed to refresh token: '.$response->body());
         }
 
         return $response->json();
@@ -88,7 +88,7 @@ class HttpOAuthService implements OAuthServiceInterface
             ->get("{$this->baseUrl}/api/user");
 
         if (! $response->successful()) {
-            throw new \Exception('Failed to get user info: ' . $response->body());
+            throw new \Exception('Failed to get user info: '.$response->body());
         }
 
         return $response->json();

@@ -96,7 +96,7 @@ class OAuthCredentials
 
     public function withoutScope(string $scope): self
     {
-        $scopes = array_filter($this->scopes, fn($s) => $s !== $scope);
+        $scopes = array_filter($this->scopes, fn ($s) => $s !== $scope);
 
         return new self(
             $this->clientId,

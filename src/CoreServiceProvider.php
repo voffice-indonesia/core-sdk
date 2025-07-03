@@ -83,7 +83,7 @@ class CoreServiceProvider extends PackageServiceProvider
         $this->app->register(CleanArchitectureServiceProvider::class);
 
         // Merge additional configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/core.php', 'core');
+        $this->mergeConfigFrom(__DIR__.'/../config/core.php', 'core');
     }
 
     public function packageBooted()
@@ -189,7 +189,7 @@ class CoreServiceProvider extends PackageServiceProvider
     protected function registerRoutes(): void
     {
         // Register routes automatically - no need for manual route file inclusion
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     /**
