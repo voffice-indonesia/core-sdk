@@ -67,8 +67,8 @@ class AutoConfig
         // Create an alias for the auth middleware with Core guard
         app('router')->aliasMiddleware('core-auth', "auth:{$guardName}");
 
-        // Create a combined middleware for both auth and vauth
-        app('router')->aliasMiddleware('core-protect', ['core-auth', 'vauth']);
+        // Create a combined middleware group for both auth and vauth
+        app('router')->middlewareGroup('core-protect', ['core-auth', 'vauth']);
     }
 
     /**
@@ -80,7 +80,8 @@ class AutoConfig
             $guardName = config('core.guard_name', 'core');
 
             Config::set('filament.auth.guard', $guardName);
-            Config::set('filament.auth.pages.login', \VoxDev\Core\Filament\Pages\Login::class);
+            // Disable default login page, let OAuth handle it
+            Config::set('filament.auth.pages.login', null);
         }
     }
 

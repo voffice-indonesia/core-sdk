@@ -12,4 +12,5 @@ parameters:
     checkModelProperties: true
     ignoreErrors:
         - '#Parameter \#1 \$view of function view expects view-string\|null, string given\.#'
-        - '#Instanceof between .* and VoxDev\\Core\\Auth\\CoreAuthUser will always evaluate to false\.#'
+        - '#Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.#'
+        - '#Trait VoxDev\\Core\\Traits\\HasCoreAuth is used zero times and is not analysed\.#'

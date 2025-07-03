@@ -10,6 +10,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 use VoxDev\Core\Auth\CoreAuthGuard;
 use VoxDev\Core\Auth\CoreAuthUserProvider as AuthCoreAuthUserProvider;
 use VoxDev\Core\Commands\CoreSetupCommand;
+use VoxDev\Core\Infrastructure\Providers\CleanArchitectureServiceProvider;
 use VoxDev\Core\Livewire\AuthCallback;
 use VoxDev\Core\Livewire\AuthRedirect;
 use VoxDev\Core\Livewire\AuthStatus;
@@ -78,8 +79,11 @@ class CoreServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
+        // Register clean architecture bindings
+        $this->app->register(CleanArchitectureServiceProvider::class);
+
         // Merge additional configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/core.php', 'core');
+        $this->mergeConfigFrom(__DIR__ . '/../config/core.php', 'core');
     }
 
     public function packageBooted()
@@ -185,9 +189,7 @@ class CoreServiceProvider extends PackageServiceProvider
     protected function registerRoutes(): void
     {
         // Register routes automatically - no need for manual route file inclusion
-        if (! $this->app->routesAreCached()) {
-            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        }
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
     }
 
     /**
@@ -225,11 +227,9 @@ class CoreServiceProvider extends PackageServiceProvider
         $router = $this->app->make(Router::class);
 
         // Auto-configure route caching considerations
-        if (! $this->app->routesAreCached()) {
-            // Register additional route patterns for OAuth flows
-            $router->pattern('oauth_state', '[a-zA-Z0-9]+');
-            $router->pattern('oauth_code', '[a-zA-Z0-9\-\_]+');
-        }
+        // Register additional route patterns for OAuth flows
+        $router->pattern('oauth_state', '[a-zA-Z0-9]+');
+        $router->pattern('oauth_code', '[a-zA-Z0-9\-\_]+');
     }
 
     /**
