@@ -42,12 +42,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Token Configuration
+    | OAuth Flow Configuration
     |--------------------------------------------------------------------------
     |
-    | Settings related to token handling and validation.
+    | Configure the OAuth flow type and security settings.
     |
     */
+    'use_pkce' => env('VAUTH_USE_PKCE', true), // Set to true for Laravel Passport with PKCE requirement
     'token_refresh_threshold' => env('VAUTH_TOKEN_REFRESH_THRESHOLD', 300), // 5 minutes in seconds
     'cookie_secure' => env('VAUTH_COOKIE_SECURE', false),
     'cookie_same_site' => env('VAUTH_COOKIE_SAME_SITE', 'lax'),
