@@ -153,6 +153,120 @@ return [
 ];
 ```
 
+## 🛡️ OAuth Authentication Workflow & Client App Setup
+
+### How the OAuth Flow Works
+
+1. **User visits a protected page**
+   - The route is protected by the `vauth` middleware.
+   - If not authenticated, the user is redirected to `/vauth/redirect`.
+2. **Redirect to Passport Server**
+   - `/vauth/redirect` sends the user to the Passport server’s authorization endpoint.
+3. **User authenticates on Passport Server**
+   - After login, the Passport server redirects back to `/vauth/callback` with an authorization code.
+4. **Client app handles callback**
+   - `/vauth/callback` exchanges the code for tokens, stores them, and creates a session.
+5. **User is authenticated in the client app**
+   - The user can now access protected resources.
+6. **Logout**
+   - `/vauth/logout` clears the session and tokens, then redirects to a public page.
+
+### Avoiding Redirect Loops (Correct Middleware Setup)
+
+- **Never protect `/vauth/redirect`, `/vauth/callback`, `/vauth/logout`, or your login page with `vauth`!**
+- **After logout, redirect to a public route (not a protected one).**
+
+**Example:**
+```php
+// routes/web.php
+// Public routes
+Route::get('/login', fn() => view('login'))->name('login');
+Route::post('/vauth/logout', [CoreController::class, 'logout'])->name('vauth.logout');
+// Protected routes
+Route::middleware(['vauth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+});
+```
+
+### FilamentPHP Integration
+
+- The SDK auto-detects Filament and sets the guard to `core`.
+- To customize, in your Filament panel provider:
+```php
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->authGuard('core') // Use the SDK's guard
+        ->login(); // Redirects to OAuth if not authenticated
+}
+```
+- You can override the guard in `config/core.php` with `'guard_name' => 'core'`.
+
+### Efficiently Changing the App Guard
+
+- The SDK uses the guard name from `config/core.php` (`'guard_name' => 'core'` by default).
+- To change the guard everywhere:
+  - Update the `guard_name` in your `.env` or `config/core.php`.
+  - Use `Auth::guard(config('core.guard_name', 'core'))` or the helper:
+    ```php
+    $user = Auth::guard(config('core.guard_name', 'core'))->user();
+    // Or, for maximum compatibility:
+    $guard = app('auth')->guard(config('core.guard_name', 'core'));
+    $user = $guard->user();
+    ```
+- In some contexts, the `Auth` facade may be empty (e.g., in jobs or CLI). Always check:
+    ```php
+    $guard = app('auth')->guard(config('core.guard_name', 'core'));
+    $user = $guard->user();
+    ```
+
+---
+
+## 🚀 Quick Start: Client App Setup
+
+1. **Install the package**
+   ```bash
+   composer require voffice-indonesia/core-sdk
+   ```
+2. **Run the setup command**
+   ```bash
+   php artisan core:setup
+   ```
+3. **Configure your `.env`**
+   ```env
+   VAUTH_URL=https://your-oauth-server.com
+   VAUTH_CLIENT_ID=your-client-id
+   VAUTH_CLIENT_SECRET=your-client-secret
+   VAUTH_REDIRECT_URI=https://your-app.com/vauth/callback
+   ```
+4. **Protect your routes**
+   ```php
+   Route::middleware(['vauth'])->group(function () {
+       Route::get('/dashboard', [DashboardController::class, 'index']);
+   });
+   ```
+5. **Do NOT protect `/vauth/redirect`, `/vauth/callback`, `/vauth/logout`, or `/login` with `vauth` middleware.**
+6. **Filament Integration**
+   - The SDK auto-configures Filament to use the correct guard.
+   - In your Filament panel provider, you can explicitly set:
+     ```php
+     public function panel(Panel $panel): Panel
+     {
+         return $panel->authGuard('core')->login();
+     }
+     ```
+7. **Efficiently Access the Authenticated User**
+   ```php
+   $user = Auth::guard(config('core.guard_name', 'core'))->user();
+   // Or, for maximum compatibility:
+   $guard = app('auth')->guard(config('core.guard_name', 'core'));
+   $user = $guard->user();
+   ```
+
+---
+
+For more details, see the sections above and the troubleshooting guide below.
+
 ## 🚀 Usage
 
 ### 1. Basic Route Protection
