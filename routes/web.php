@@ -12,35 +12,40 @@ use VoxDev\Core\Controllers\Auth\LivewireAuthController;
 |
 | Here we register the routes needed for OAuth authentication flow.
 | These routes handle the authorization redirect and callback processing.
+| IMPORTANT: These routes MUST use web middleware for session persistence.
 |
 */
 
-// Route group for OAuth authentication
-Route::prefix(config('core.route_prefix', 'auth/oauth'))
-    ->name('core.auth.')
-    ->group(function () {
+// Wrap all OAuth routes in web middleware to ensure session persistence
+Route::middleware(['web'])->group(function () {
 
-        // Redirect to OAuth authorization server
-        Route::get('/redirect', [CoreController::class, 'redirect'])
-            ->name('redirect');
+    // Route group for OAuth authentication
+    Route::prefix(config('core.route_prefix', 'auth/oauth'))
+        ->name('core.auth.')
+        ->group(function () {
 
-        // Handle OAuth callback
-        Route::get('/callback', [CallbackController::class, 'callback'])
-            ->name('callback');
+            // Redirect to OAuth authorization server
+            Route::get('/redirect', [CoreController::class, 'redirect'])
+                ->name('redirect');
 
-        // Logout route
-        Route::post('/logout', [CoreController::class, 'logout'])
-            ->name('logout');
-    });
+            // Handle OAuth callback
+            Route::get('/callback', [CallbackController::class, 'callback'])
+                ->name('callback');
 
-// Alternative simpler routes (can be used if prefix is not desired)
-Route::get('/vauth/redirect', [CoreController::class, 'redirect'])->name('vauth.redirect');
-Route::get('/vauth/callback', [CallbackController::class, 'callback'])->name('vauth.callback');
-Route::post('/vauth/logout', [CoreController::class, 'logout'])->name('vauth.logout');
+            // Logout route
+            Route::post('/logout', [CoreController::class, 'logout'])
+                ->name('logout');
+        });
 
-// Livewire-powered authentication pages (optional - can be customized)
-Route::get('/oauth/login', [LivewireAuthController::class, 'login'])->name('oauth.login');
-Route::get('/oauth/callback-ui', [LivewireAuthController::class, 'callbackUi'])->name('oauth.callback-ui');
-Route::get('/oauth/dashboard', [LivewireAuthController::class, 'dashboard'])
-    ->middleware(['vauth'])
-    ->name('oauth.dashboard');
+    // Alternative simpler routes (can be used if prefix is not desired)
+    Route::get('/vauth/redirect', [CoreController::class, 'redirect'])->name('vauth.redirect');
+    Route::get('/vauth/callback', [CallbackController::class, 'callback'])->name('vauth.callback');
+    Route::post('/vauth/logout', [CoreController::class, 'logout'])->name('vauth.logout');
+
+    // Livewire-powered authentication pages (optional - can be customized)
+    Route::get('/oauth/login', [LivewireAuthController::class, 'login'])->name('oauth.login');
+    Route::get('/oauth/callback-ui', [LivewireAuthController::class, 'callbackUi'])->name('oauth.callback-ui');
+    Route::get('/oauth/dashboard', [LivewireAuthController::class, 'dashboard'])
+        ->middleware(['vauth'])
+        ->name('oauth.dashboard');
+});

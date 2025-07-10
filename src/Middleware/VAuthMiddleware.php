@@ -18,6 +18,11 @@ class VAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // If user is already authenticated in session, allow request
+        if (session()->has('vauth_user')) {
+            return $next($request);
+        }
+
         // Get valid token (will refresh automatically if needed)
         $token = VAuthHelper::getValidToken();
 
