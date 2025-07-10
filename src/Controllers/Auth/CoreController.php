@@ -3,6 +3,7 @@
 namespace VoxDev\Core\Controllers\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use VoxDev\Core\Core;
 use VoxDev\Core\Events\UserLoggedOut;
 use VoxDev\Core\Helpers\VAuthHelper;
@@ -34,6 +35,9 @@ class CoreController
 
         // Clear session data
         $request->session()->forget('vauth_user');
+
+        Http::withToken(VAuthHelper::getValidToken())
+            ->post('/logout');
 
         // Redirect to login page or home
         return redirect(config('core.login_url', '/'));
