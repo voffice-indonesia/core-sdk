@@ -5,6 +5,9 @@ namespace VoxDev\Core\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Http;
+use VoxDev\Core\Events\UserLoggedOut;
+use VoxDev\Core\Helpers\VAuthHelper;
 
 class CoreAuthGuard implements Guard
 {
@@ -77,6 +80,16 @@ class CoreAuthGuard implements Guard
     public function logout(): void
     {
         $this->user = null;
+        // Dispatch logout event
+        event(new UserLoggedOut);
+
+        // Clear authentication cookies
+        VAuthHelper::clearAuthCookies();
+
+        // Clear session data
         $this->session->forget('vauth_user');
+
+        Http::withToken(VAuthHelper::getValidToken())
+            ->post('/logout');
     }
 }
