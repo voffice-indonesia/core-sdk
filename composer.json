@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^8.4",
+        "php": "^8.2",
         "filament/filament": "^3.3",
         "illuminate/auth": "^10.0 || ^11.0||^12.0",
         "illuminate/contracts": "^10.0||^11.0||^12.0",
