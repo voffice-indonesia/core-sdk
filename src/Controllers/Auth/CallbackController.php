@@ -143,13 +143,13 @@ class CallbackController
             $intendedUrl = session('url.intended', config('core.default_redirect_after_login', '/dashboard'));
             session()->forget('url.intended');
 
-            return redirect($intendedUrl)->with('success', 'Successfully logged in!');
+            return redirect($intendedUrl);
         } catch (\Exception $e) {
             Log::error('OAuth callback error', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'session_id' => Session::getId(),
-                'has_code' => !empty($code),
+                'has_code' => $code,
                 'has_state' => !empty($state),
                 'uses_pkce' => $usesPKCE ?? false
             ]);
