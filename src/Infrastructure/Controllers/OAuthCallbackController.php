@@ -27,7 +27,7 @@ class OAuthCallbackController
 
         if ($error) {
             return redirect(config('core.login_url', '/'))
-                ->withErrors(['oauth' => 'OAuth authorization failed: '.$error]);
+                ->withErrors(['oauth' => 'OAuth authorization failed: ' . $error]);
         }
 
         if (! $code) {
@@ -55,7 +55,7 @@ class OAuthCallbackController
             $intendedUrl = session('url.intended', config('core.default_redirect_after_login', '/dashboard'));
             session()->forget('url.intended');
 
-            return redirect($intendedUrl)->with('success', 'Successfully logged in!');
+            return redirect($intendedUrl);
         } catch (\Exception $e) {
             logger()->error('OAuth callback error', [
                 'message' => $e->getMessage(),
