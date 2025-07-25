@@ -5,9 +5,13 @@ namespace VoxDev\Core\Auth;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\DatabaseNotification;
 
 class CoreAuthUser implements Authenticatable, FilamentUser
 {
+    use Notifiable;
+
     protected array $attributes;
 
     public function __construct(array $userData)
@@ -201,18 +205,6 @@ class CoreAuthUser implements Authenticatable, FilamentUser
         return 'id';
     }
 
-    public function markAsRead()
-    {
-        // No-op for OAuth users
-        return $this;
-    }
-
-    public function markAsUnread()
-    {
-        // No-op for OAuth users
-        return $this;
-    }
-
     // Additional Laravel model methods that Filament might expect
     public function exists(): bool
     {
@@ -253,5 +245,66 @@ class CoreAuthUser implements Authenticatable, FilamentUser
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    // Notification methods for database notifications
+    public function notifications()
+    {
+        return DatabaseNotification::whereNotifiableId($this->getKey())
+            ->whereNotifiableType(static::class)
+            ->latest();
+    }
+
+    public function readNotifications()
+    {
+        return $this->notifications()->whereNotNull('read_at');
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->whereNull('read_at');
+    }
+
+    public function markAsRead()
+    {
+        $this->unreadNotifications()->update(['read_at' => now()]);
+        return $this;
+    }
+
+    public function markAsUnread()
+    {
+        $this->readNotifications()->update(['read_at' => null]);
+        return $this;
+    }
+
+    public function markNotificationAsRead($notificationId)
+    {
+        $this->notifications()->where('id', $notificationId)->update(['read_at' => now()]);
+        return $this;
+    }
+
+    public function getUnreadNotificationCount(): int
+    {
+        return $this->unreadNotifications()->count();
+    }
+
+    // Required for Notifiable trait compatibility
+    public function routeNotificationForMail($notification = null)
+    {
+        return $this->getEmail();
+    }
+
+    public function routeNotificationForDatabase($notification = null)
+    {
+        return [
+            'id' => $this->getKey(),
+            'type' => static::class,
+        ];
+    }
+
+    // For notification polymorphic relationship
+    public function getMorphClass()
+    {
+        return static::class;
     }
 }

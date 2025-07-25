@@ -36,7 +36,7 @@ class CallbackController
 
         try {
             Log::debug("OAuth callback initiated", [
-                'has_code' => !empty($code),
+                'has_code' => (bool)$code,
                 'has_state' => !empty($state),
                 'session_id' => Session::getId(),
                 'all_session_keys' => array_keys(Session::all())

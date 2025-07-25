@@ -9,10 +9,12 @@ use VoxDev\Core\Application\UseCases\RefreshUserToken;
 use VoxDev\Core\Domain\Repositories\TokenRepositoryInterface;
 use VoxDev\Core\Domain\Repositories\UserRepositoryInterface;
 use VoxDev\Core\Domain\Services\OAuthServiceInterface;
+use VoxDev\Core\Domain\Services\VAuthServiceInterface;
 use VoxDev\Core\Infrastructure\Guards\CleanArchitectureGuard;
 use VoxDev\Core\Infrastructure\Repositories\CookieTokenRepository;
 use VoxDev\Core\Infrastructure\Repositories\SessionUserRepository;
 use VoxDev\Core\Infrastructure\Services\HttpOAuthService;
+use VoxDev\Core\Infrastructure\Services\VAuthService;
 
 /**
  * Clean Architecture Service Provider
@@ -31,6 +33,9 @@ class CleanArchitectureServiceProvider extends ServiceProvider
         $this->app->bind(OAuthServiceInterface::class, function ($app) {
             return new HttpOAuthService(config('core.url'));
         });
+
+        $this->app->bind(VAuthServiceInterface::class, VAuthService::class);
+        $this->app->singleton('vauth.service', VAuthService::class);
 
         // Register use cases
         $this->app->bind(AuthenticateUser::class);
