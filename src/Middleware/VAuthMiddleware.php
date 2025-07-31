@@ -18,6 +18,11 @@ class VAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip authentication for logout routes to prevent token refresh during logout
+        if ($request->is('*/vauth/logout') || $request->is('*/auth/oauth/logout')) {
+            return $next($request);
+        }
+
         // If user is already authenticated in session, allow request
         if (session()->has('vauth_user')) {
             return $next($request);

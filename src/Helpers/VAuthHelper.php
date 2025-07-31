@@ -6,17 +6,17 @@ class VAuthHelper
 {
     public static function getAuthorizeUrl(string $query): string
     {
-        return config('core.url').'/oauth/authorize?'.$query;
+        return config('core.url') . '/oauth/authorize?' . $query;
     }
 
     public static function getTokenUrl(): string
     {
-        return config('core.url').'/oauth/token';
+        return config('core.url') . '/oauth/token';
     }
 
     public static function getUserApiUrl(): string
     {
-        return config('core.url').'/api/user';
+        return config('core.url') . '/api/user';
     }
 
     /**
@@ -195,8 +195,19 @@ class VAuthHelper
         ];
 
         foreach ($cookieNames as $cookieName) {
+            // Clear from current request cookies array
+            if (isset($_COOKIE[$cookieName])) {
+                unset($_COOKIE[$cookieName]);
+            }
+
+            // Queue cookie deletion for the response
             \Illuminate\Support\Facades\Cookie::queue(
                 \Illuminate\Support\Facades\Cookie::forget($cookieName, '/', $domain)
+            );
+
+            // Also clear with empty domain for broader compatibility
+            \Illuminate\Support\Facades\Cookie::queue(
+                \Illuminate\Support\Facades\Cookie::forget($cookieName, '/', '')
             );
         }
     }
